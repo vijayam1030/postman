@@ -7,14 +7,14 @@
   </header>
 
   <main class="max-w-7xl mx-auto px-4 py-8">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
       <!-- Request Builder - Takes 2 columns on large screens -->
       <div class="lg:col-span-2">
         <app-request-builder></app-request-builder>
       </div>
 
       <!-- Request History - Takes 1 column on large screens -->
-      <div class="lg:col-span-1">
+      <div class="lg:col-span-1 lg:sticky lg:top-8">
         <app-request-history (requestSelected)="onRequestSelected($event)"></app-request-history>
       </div>
     </div>

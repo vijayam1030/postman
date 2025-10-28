@@ -1,16 +1,16 @@
-<div class="bg-white rounded-lg shadow-md p-6">
-  <div class="flex justify-between items-center mb-4">
+<div class="bg-white rounded-lg shadow-md p-6 flex flex-col h-full">
+  <div class="flex justify-between items-center mb-4 flex-shrink-0">
     <h2 class="text-2xl font-bold">Request History</h2>
     <div class="flex gap-2">
       <button
         (click)="refresh()"
-        class="px-4 py-2 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors">
+        class="px-3 py-1.5 text-sm text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors">
         Refresh
       </button>
       <button
         (click)="clearAllHistory()"
         [disabled]="history.length === 0"
-        class="px-4 py-2 text-red-600 border border-red-600 rounded-lg hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+        class="px-3 py-1.5 text-sm text-red-600 border border-red-600 rounded-lg hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
         Clear All
       </button>
     </div>
@@ -26,36 +26,40 @@
     No request history yet. Send a request to get started!
   </div>
 
-  <!-- History List -->
-  <div *ngIf="!loading && history.length > 0" class="space-y-2">
+  <!-- History List with scrolling -->
+  <div *ngIf="!loading && history.length > 0" class="space-y-2 overflow-y-auto flex-1 pr-2" style="max-height: calc(100vh - 250px);">
     <div
       *ngFor="let item of history"
       (click)="selectRequest(item)"
-      class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 cursor-pointer transition-colors">
-      <div class="flex items-center justify-between mb-2">
-        <div class="flex items-center gap-3">
+      class="border border-gray-200 rounded-lg p-3 hover:bg-gray-50 cursor-pointer transition-colors">
+      <div class="flex items-start justify-between mb-2 gap-2">
+        <div class="flex items-center gap-2 min-w-0 flex-1">
           <span
             [class]="getMethodColor(item.method)"
-            class="px-3 py-1 rounded-lg text-sm font-semibold">
+            class="px-2 py-1 rounded text-xs font-semibold whitespace-nowrap flex-shrink-0">
             {{ item.method }}
           </span>
-          <span class="text-gray-700 font-medium">{{ item.url }}</span>
+          <span
+            class="text-gray-700 text-sm font-medium truncate"
+            [title]="item.url">
+            {{ item.url }}
+          </span>
         </div>
         <button
           (click)="deleteRequest(item.id, $event)"
-          class="text-red-600 hover:bg-red-50 px-3 py-1 rounded-lg transition-colors">
+          class="text-red-600 hover:bg-red-50 px-2 py-1 rounded text-xs transition-colors flex-shrink-0">
           Delete
         </button>
       </div>
 
-      <div class="flex items-center gap-4 text-sm text-gray-600">
-        <span *ngIf="item.response">
+      <div class="flex items-center gap-3 text-xs text-gray-600 flex-wrap">
+        <span *ngIf="item.response" class="whitespace-nowrap">
           Status: <span [class]="getStatusColor(item.response.status)">{{ item.response.status }}</span>
         </span>
-        <span *ngIf="item.response">
+        <span *ngIf="item.response" class="whitespace-nowrap">
           Time: {{ item.response.responseTime }}ms
         </span>
-        <span class="text-gray-400">
+        <span class="text-gray-400 whitespace-nowrap">
           {{ formatDate(item.timestamp) }}
         </span>
       </div>
