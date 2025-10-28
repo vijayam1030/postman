@@ -1,6 +1,8 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 import { ApiService } from '../services/api.service';
+import { HistoryEventService } from '../services/history-event.service';
 import { RequestHistory } from '../models/request.model';
 
 @Component({
@@ -10,16 +12,29 @@ import { RequestHistory } from '../models/request.model';
   templateUrl: './request-history.component.html',
   styleUrl: './request-history.component.css'
 })
-export class RequestHistoryComponent implements OnInit {
+export class RequestHistoryComponent implements OnInit, OnDestroy {
   @Output() requestSelected = new EventEmitter<RequestHistory>();
 
   history: RequestHistory[] = [];
   loading = false;
+  private historySubscription?: Subscription;
 
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private historyEventService: HistoryEventService
+  ) {}
 
   ngOnInit(): void {
     this.loadHistory();
+
+    // Listen for history updates
+    this.historySubscription = this.historyEventService.historyUpdated$.subscribe(() => {
+      this.loadHistory();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.historySubscription?.unsubscribe();
   }
 
   loadHistory(): void {

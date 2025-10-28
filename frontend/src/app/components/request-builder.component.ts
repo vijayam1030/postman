@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpRequest, HttpResponse, KeyValue } from '../models/request.model';
 import { ApiService } from '../services/api.service';
+import { HistoryEventService } from '../services/history-event.service';
 
 @Component({
   selector: 'app-request-builder',
@@ -28,7 +29,10 @@ export class RequestBuilderComponent {
 
   httpMethods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'];
 
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private historyEventService: HistoryEventService
+  ) {}
 
   addKeyValue(type: 'headers' | 'params'): void {
     this.request[type]?.push({ key: '', value: '', enabled: true });
@@ -66,7 +70,15 @@ export class RequestBuilderComponent {
             params,
           },
           response
-        ).subscribe();
+        ).subscribe({
+          next: () => {
+            // Notify history component to refresh
+            this.historyEventService.notifyHistoryUpdated();
+          },
+          error: (err) => {
+            console.error('Failed to save to history:', err);
+          }
+        });
       },
       error: (error) => {
         this.error = error.message || 'Request failed';
