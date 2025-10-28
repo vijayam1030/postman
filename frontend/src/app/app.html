@@ -1,0 +1,24 @@
+<div class="min-h-screen bg-gray-100">
+  <header class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-6">
+      <h1 class="text-3xl font-bold text-gray-900">{{ title }}</h1>
+      <p class="text-gray-600 mt-1">A modern HTTP client for testing APIs</p>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Request Builder - Takes 2 columns on large screens -->
+      <div class="lg:col-span-2">
+        <app-request-builder></app-request-builder>
+      </div>
+
+      <!-- Request History - Takes 1 column on large screens -->
+      <div class="lg:col-span-1">
+        <app-request-history (requestSelected)="onRequestSelected($event)"></app-request-history>
+      </div>
+    </div>
+  </main>
+</div>
+
+<router-outlet />
